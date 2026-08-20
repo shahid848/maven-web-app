@@ -1,13 +1,22 @@
+```groovy id="x7h2qk"
 node {
-    def mvnPath
-    
-    stage('git clone process') {
-        git 'https://github.com/ashokitschool/maven-web-app.git'
+
+    stage('Git Clone') {
+        git branch: 'master',
+            url: 'https://github.com/shahid848/maven-web-app.git'
     }
-    
-    stage('Maven build'){
-        def mvnHome = tool name:'maven', type:"maven";
-        mvnPath = "${mvnHome}/bin/mvn";
-        sh "${mvnPath} clean package"
-    }    
+
+    stage('Maven Build') {
+        def mvnHome = tool name: 'Maven-3.9.16', type: 'maven'
+        sh "${mvnHome}/bin/mvn clean package"
+    }
+
+    stage('Docker Build') {
+        sh 'docker build -t shahid848/maven-web-app:${BUILD_NUMBER} .'
+    }
+
+    stage('Kubernetes Deploy') {
+        sh 'kubectl apply -f k8s-deploy.yml'
+    }
 }
+```
