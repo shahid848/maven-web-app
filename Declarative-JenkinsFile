@@ -1,20 +1,35 @@
+```groovy
 pipeline {
     agent any
-    
-    tools{
-        maven "Maven-3.9.4"
+
+    tools {
+        maven "Maven-3.9.16"
     }
 
     stages {
+
         stage('Clone') {
             steps {
-                git 'https://github.com/ashokitschool/maven-web-app.git'
+                git branch: 'master',
+                    url: 'https://github.com/shahid848/maven-web-app.git'
             }
         }
-         stage('Build') {
+
+        stage('Build') {
             steps {
                 sh 'mvn clean package'
             }
         }
+
+    }
+
+    post {
+        success {
+            echo 'Build Successful'
+        }
+        failure {
+            echo 'Build Failed'
+        }
     }
 }
+```
